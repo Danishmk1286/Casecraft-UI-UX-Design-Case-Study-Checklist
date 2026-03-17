@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UI/UX Case Study Checklist</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #F6F4EF;
+  --surface: #FFFFFF;
+  --surface2: #EFECE5;
+  --ink: #1C1A17;
+  --ink2: #6A6660;
+  --ink3: #A9A49D;
+  --border: #E0DBD2;
+  --accent: #C0471A;
+  --accent-bg: #FAF0EB;
+  --green: #2A7A4A;
+  --green-bg: #EAF5EE;
+  --green-border: #B5D9C4;
+  --r: 12px;
+  --rsm: 6px;
+  --font: Georgia, 'Times New Roman', serif;
+  --ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+html, body { font-family: var(--ui); background: var(--bg); color: var(--ink); min-height: 100vh; font-size: 16px; }
+.layout { display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+.sb { width: 256px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; }
+.sb-brand { padding: 22px 20px 16px; border-bottom: 1px solid var(--border); }
+.mark { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--ink); border-radius: 7px; color: white; font-family: var(--font); font-size: 15px; margin-bottom: 9px; }
+.sb-brand h1 { font-family: var(--font); font-size: 14px; font-weight: normal; line-height: 1.35; }
+.sb-brand p { font-size: 11px; color: var(--ink3); margin-top: 2px; }
+.sb-prog { padding: 14px 20px; border-bottom: 1px solid var(--border); }
+.sb-prog .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 7px; }
+.sb-prog .lbl { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--ink2); }
+.sb-prog .pct { font-family: var(--font); font-size: 22px; }
+.track { height: 3px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width .5s ease; width: 0%; }
+.sb-prog .sub { font-size: 11px; color: var(--ink3); margin-top: 5px; }
+.vtog { display: flex; gap: 4px; padding: 10px 20px; border-bottom: 1px solid var(--border); }
+.vbtn { flex: 1; padding: 5px 4px; font-size: 11px; font-family: var(--ui); font-weight: 500; border: 1px solid var(--border); background: transparent; color: var(--ink2); border-radius: var(--rsm); cursor: pointer; transition: all .12s; }
+.vbtn.on { background: var(--ink); color: white; border-color: var(--ink); }
+.sb-nav { flex: 1; padding: 6px 0 20px; overflow-y: auto; }
+.nrow { display: flex; align-items: center; gap: 8px; padding: 7px 20px; cursor: pointer; border-left: 2px solid transparent; transition: background .1s; }
+.nrow:hover { background: var(--bg); }
+.nrow.act { background: var(--accent-bg); border-left-color: var(--accent); }
+.nrow.act .nlbl { color: var(--accent); font-weight: 500; }
+.ndot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); flex-shrink: 0; transition: background .2s; }
+.nrow.dn .ndot { background: var(--green); }
+.nrow.act .ndot { background: var(--accent); }
+.nlbl { font-size: 12px; color: var(--ink2); flex: 1; line-height: 1.3; }
+.nct { font-size: 10px; color: var(--ink3); }
+
+/* MAIN */
+.main { flex: 1; padding: 44px 44px 80px; max-width: 760px; min-width: 0; }
+.ph { margin-bottom: 36px; padding-bottom: 28px; border-bottom: 1px solid var(--border); }
+.ey { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); margin-bottom: 10px; }
+.ph h2 { font-family: var(--font); font-size: 34px; font-weight: normal; line-height: 1.2; margin-bottom: 10px; }
+.ph p { font-size: 14px; color: var(--ink2); line-height: 1.7; max-width: 500px; }
+.dbanner { display: none; background: var(--green-bg); border: 1px solid var(--green-border); border-radius: var(--r); padding: 16px 20px; margin-bottom: 22px; align-items: center; gap: 14px; }
+.dbanner.show { display: flex; }
+.dicon { width: 34px; height: 34px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.dbanner h3 { font-size: 14px; font-weight: 600; color: var(--green); margin-bottom: 2px; }
+.dbanner p { font-size: 12px; color: #5A9E78; }
+
+/* QUICK REF */
+.qv { display: none; }
+.qv.show { display: block; }
+.qgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.qcard { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 13px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: border-color .12s, transform .12s; }
+.qcard:hover { border-color: var(--ink3); transform: translateY(-1px); }
+.qcard.dn { background: var(--green-bg); border-color: var(--green-border); }
+.qchk { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+.qcard.dn .qchk { background: var(--green); border-color: var(--green); }
+.qchk svg { display: none; }
+.qcard.dn .qchk svg { display: block; }
+.qlbl { font-size: 12px; color: var(--ink); line-height: 1.4; }
+.qcard.dn .qlbl { color: var(--green); text-decoration: line-through; text-decoration-color: var(--green-border); }
+
+/* DETAIL VIEW */
+.dv { display: none; }
+.dv.show { display: block; }
+.dc { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 14px; overflow: hidden; transition: box-shadow .15s; }
+.dc:hover { box-shadow: 0 2px 14px rgba(0,0,0,.07); }
+.dh { padding: 16px 20px; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; user-select: none; transition: background .1s; }
+.dh:hover { background: var(--bg); }
+.dnum { font-family: var(--font); font-size: 13px; color: var(--ink3); flex-shrink: 0; width: 20px; text-align: right; padding-top: 1px; }
+.dm { flex: 1; min-width: 0; }
+.dt { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.3; margin-bottom: 3px; }
+.dw { font-size: 12px; color: var(--ink2); line-height: 1.5; }
+.dr { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.dbadge { font-size: 11px; color: var(--ink3); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 2px 9px; }
+.dc.adn .dbadge { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
+.dchev { color: var(--ink3); font-size: 10px; transition: transform .2s; line-height: 1; }
+.dc.open .dchev { transform: rotate(90deg); }
+.dstrip { height: 2px; background: var(--border); position: relative; overflow: hidden; }
+.dsf { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); transition: width .4s ease; }
+.dc.adn .dsf { background: var(--green); }
+.dbody { display: none; border-top: 1px solid var(--border); }
+.dc.open .dbody { display: block; }
+.tr { display: flex; align-items: flex-start; gap: 12px; padding: 12px 20px 12px 52px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background .1s; }
+.tr:last-child { border-bottom: none; }
+.tr:hover { background: var(--bg); }
+.tchk { width: 16px; height: 16px; border: 1.5px solid var(--border); border-radius: 4px; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; background: white; transition: all .13s; }
+.tr.ck .tchk { background: var(--accent); border-color: var(--accent); }
+.tchk svg { display: none; }
+.tr.ck .tchk svg { display: block; }
+.tc { flex: 1; min-width: 0; }
+.tl { font-size: 13px; color: var(--ink); line-height: 1.5; }
+.tr.ck .tl { color: var(--ink3); text-decoration: line-through; text-decoration-color: var(--ink3); }
+.tip { font-size: 11px; color: var(--ink3); margin-top: 3px; line-height: 1.5; }
+
+/* SCALE CARD */
+.sc { background: var(--ink); border-radius: var(--r); padding: 26px 28px; margin-top: 6px; }
+.sc h3 { font-family: var(--font); font-size: 18px; font-weight: normal; color: white; margin-bottom: 8px; }
+.sc p { font-size: 13px; color: rgba(255,255,255,.55); line-height: 1.65; margin-bottom: 14px; }
+.stags { display: flex; flex-wrap: wrap; gap: 6px; }
+.stag { font-size: 11px; background: rgba(255,255,255,.09); color: rgba(255,255,255,.65); border: 1px solid rgba(255,255,255,.14); border-radius: 20px; padding: 3px 11px; }
+
+/* CONFETTI */
+.cf { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 9999; overflow: hidden; display: none; }
+.cf.on { display: block; }
+@keyframes fall { 0%{transform:translateY(-10px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
+
+@media(max-width:860px){.sb{width:220px}.main{padding:28px 24px 60px}}
+@media(max-width:640px){.layout{flex-direction:column}.sb{width:100%;height:auto;position:static}.sb-nav{display:none}.main{padding:20px 16px 48px;max-width:100%}.qgrid{grid-template-columns:1fr}.ph h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="cf" id="cf"></div>
+<div class="layout">
+<aside class="sb">
+  <div class="sb-brand">
+    <div class="mark">D</div>
+    <h1>Case Study<br>Checklist</h1>
+    <p>For beginner UI/UX students</p>
+  </div>
+  <div class="sb-prog">
+    <div class="row"><span class="lbl">Overall progress</span><span class="pct" id="spct">0%</span></div>
+    <div class="track"><div class="fill" id="sfill"></div></div>
+    <div class="sub" id="ssub">0 of 0 tasks done</div>
+  </div>
+  <div class="vtog">
+    <button class="vbtn on" id="bdet" onclick="sv('det')">Full guide</button>
+    <button class="vbtn" id="bqr" onclick="sv('qr')">Quick ref</button>
+  </div>
+  <nav class="sb-nav" id="snav"></nav>
+</aside>
+<main class="main">
+  <div class="ph">
+    <div class="ey">Portfolio case study</div>
+    <h2>Your step-by-step<br>design process</h2>
+    <p>17 deliverables. Every task includes a tip explaining why it matters. Work through these in order — each one feeds the next.</p>
+  </div>
+  <div class="dbanner" id="dban">
+    <div class="dicon"><svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1 6L5.5 10.5L15 1" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div><h3>Case study complete!</h3><p>All 17 deliverables done. Time to publish.</p></div>
+  </div>
+  <div class="qv" id="qv"><div class="qgrid" id="qgrid"></div></div>
+  <div class="dv show" id="dv">
+    <div id="dc"></div>
+    <div class="sc">
+      <h3>Scaling to other project types</h3>
+      <p>This checklist follows a reusable skeleton: Problem → Research → Define → IA → Ideation → Design → Test → Handoff → Document → Publish. For other project types, swap domain-specific deliverables while keeping the structure intact.</p>
+      <div class="stags">
+        <span class="stag">Product redesign</span><span class="stag">Mobile app</span><span class="stag">Design system</span><span class="stag">Service design</span><span class="stag">Dashboard UI</span><span class="stag">Onboarding flow</span>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+<script>
+var D=[
+{id:"brief",title:"Project Brief",why:"Sets the foundation. Without a brief, students design without direction.",tasks:[
+{l:"Write a one-sentence problem statement (who, what, why)",t:"Be specific: 'Busy parents struggle to track children's medication schedules without missing doses.'"},
+{l:"List business goals and user goals the project aims to satisfy",t:"Business goal: reduce support tickets. User goal: complete the task in under 2 minutes."},
+{l:"Identify 2-3 success metrics",t:"E.g. task completion rate, decreased error rate, time-on-task. These become your proof later."},
+{l:"Define constraints and assumptions early (tech, budget, timeline, brand)",t:"Constraints focus your decisions and explain your scope to anyone reading the case study."},
+{l:"State what success looks like at the end of the project",t:"Imagine presenting this case study — what would make you proud of it?"}]},
+{id:"research",title:"Research Plan & Execution",why:"Most beginners skip this. Making it a deliverable forces the output to be concrete.",tasks:[
+{l:"List 3-5 research questions you want to answer",t:"Frame as questions, not assumptions. E.g. 'How do users currently solve this problem?'"},
+{l:"Choose your research methods (interviews, surveys, desk research)",t:"For a portfolio project: 3-5 interviews + desk research is enough."},
+{l:"Do desk research — read 3-5 articles or reports, summarise key findings",t:"Note the source for each insight. You will cite these in the case study."},
+{l:"Write a recruiting screener — who exactly do you want to talk to?",t:"2-3 criteria: age range, relevant behaviour, experience level. Do not over-filter."},
+{l:"Conduct 3-5 user interviews (record or take detailed notes)",t:"Use open-ended questions: 'Tell me about the last time you...' Stay silent while they answer."},
+{l:"Document all raw notes and quotes in a single research file",t:"Keep everything. Messy notes, audio timestamps, screenshots. You will reference these throughout."}]},
+{id:"competitive",title:"Competitive Analysis",why:"Shows what already exists and where the gap is. Makes your design decisions defensible.",tasks:[
+{l:"Identify 2-4 competitor or comparable products",t:"Include direct competitors and indirect ones (same job-to-be-done, different category)."},
+{l:"Capture screenshots of key flows for each competitor",t:"Onboarding, core task, empty state. Store these in your research folder."},
+{l:"Note strengths, weaknesses, and gaps for each",t:"Gaps = opportunities for your design. Weaknesses = patterns to avoid."},
+{l:"Note design patterns you want to borrow or avoid",t:"Borrowing established patterns reduces cognitive load. Avoiding bad ones shows critical thinking."}]},
+{id:"synthesis",title:"Research Synthesis",why:"Raw research does not become insight on its own. This is where the real thinking happens.",tasks:[
+{l:"Use affinity mapping to group notes into 3-6 themes",t:"Write one insight per sticky note (physical or Miro). Group by similarity, then name the cluster."},
+{l:"Identify the top 3-5 pain points with supporting quotes or data",t:"Each pain point needs at least one direct quote or data point backing it."},
+{l:"Write a key insights summary — 5-8 bullet points max",t:"Write these for a reader, not yourself. They become the Research section of your case study."}]},
+{id:"persona",title:"User Persona",why:"One grounded persona is worth more than three invented ones. It anchors every design decision.",tasks:[
+{l:"Pull 3-4 recurring themes from your interviews to anchor the persona",t:"The persona should reflect patterns across participants, not one individual."},
+{l:"Draft: name, age, occupation, context of use",t:"Context of use (when/where/how they use the product) matters more than demographics."},
+{l:"Write their primary goal and secondary goal",t:"Primary goal: what they are trying to accomplish. Secondary: what they care about while doing it."},
+{l:"List 3 frustrations — sourced from research, not invented",t:"If you cannot trace a frustration back to an interview quote, cut it."},
+{l:"Add a representative quote pulled from your interviews",t:"A real quote makes the persona feel human and shows your research was genuine."},
+{l:"Note the tools and behaviours they currently use",t:"This reveals where your product fits into their existing workflow."}]},
+{id:"problem",title:"Problem Statement & Scope",why:"The bridge between research and design. Getting this wrong means designing the wrong thing.",tasks:[
+{l:"Write the problem statement: [User] needs a way to [goal] because [insight]",t:"'Busy parents need a way to track medication schedules because they rely on memory and miss doses.'"},
+{l:"Validate it against your research — can you cite 2+ findings that support it?",t:"If the evidence does not support the statement, revise the statement, not the evidence."},
+{l:"Write 5-8 How Might We questions from the pain points",t:"Turn each pain point into an opportunity: 'How might we make it easier for parents to set up reminders?'"},
+{l:"Prioritise the top 3 HMWs to focus on",t:"Use a 2x2 (impact vs. effort) or dot voting. Document why others were deprioritised."},
+{l:"Define what is in scope and explicitly out of scope",t:"Out-of-scope items belong in future work. Do not ignore them — document them."}]},
+{id:"ia",title:"Information Architecture & User Flows",why:"Often missing from student portfolios. A sitemap and flow prove you thought about the system, not just the screens.",tasks:[
+{l:"Sketch a high-level sitemap showing primary sections and their relationships",t:"Do not over-engineer it. 6-12 nodes is enough for most portfolio projects."},
+{l:"Identify and prioritise the 2-3 key user journeys to design",t:"E.g. onboarding, core task, error recovery. Focus effort where users spend the most time."},
+{l:"Create a user flow diagram for the primary journey",t:"Show every screen, decision point, and alternate path including error states."},
+{l:"Define a consistent navigation and labelling system",t:"Label clarity matters more than cleverness. Test labels by asking someone what they think each one does."}]},
+{id:"journey",title:"User Journey Map",why:"Shows the current experience from the user's perspective. Makes the pain visible and the design work meaningful.",tasks:[
+{l:"Choose one primary scenario to map (e.g. booking an appointment)",t:"Keep the scenario specific and realistic. Broad scenarios produce vague maps."},
+{l:"Map the stages: Awareness, Start, Middle, End, Outcome",t:"Aim for 4-6 stages. Each should represent a distinct shift in what the user is doing."},
+{l:"Add user actions at each stage",t:"What are they physically doing? Clicking, searching, calling, waiting?"},
+{l:"Add thoughts and emotions at each stage",t:"Use direct quotes from interviews where possible. Avoid projecting feelings."},
+{l:"Highlight pain points — these become your design opportunities",t:"Annotate moments of highest friction. These map directly to your HMW questions."},
+{l:"Export as a readable visual (Figma, Miro, or a clear table)",t:"Should be readable by someone who has not seen your research. Add a title and one-sentence context."}]},
+{id:"ideation",title:"Ideation & Concept Exploration",why:"Skipping ideation means committing to the first idea. This step generates options before narrowing.",tasks:[
+{l:"Sketch at least 3 different layout ideas for the main screen (paper is fine)",t:"Set a 10-minute timer. Speed matters — quantity over quality at this stage."},
+{l:"Generate 5-10 ideas quickly using sketches, post-its, or whiteboard notes",t:"Wild ideas are allowed. The goal is to surprise yourself before settling."},
+{l:"Use a 2x2 or dot-vote to select 2-3 strongest concepts",t:"Axes: user value vs. feasibility. Pick criteria that fits your constraints."},
+{l:"Annotate each sketch with your reasoning",t:"One sentence per sketch: why this direction, and what assumption it makes."},
+{l:"Document why certain ideas were deprioritised",t:"This is gold for your case study. It shows systematic thinking, not just taste."},
+{l:"Get quick feedback from one person before proceeding",t:"Show your sketches, not your explanation of them. Watch where they get confused."}]},
+{id:"wireframes",title:"Wireframes",why:"Structure without style. Proves you can solve layout and hierarchy before reaching for colour.",tasks:[
+{l:"Identify the 5-8 key screens to wireframe",t:"Core task screens + one onboarding screen + one error state. Do not wireframe every edge case."},
+{l:"Start with mobile-first if it is a mobile product",t:"Mobile constraints force good decisions. Desktop-first often bloats the layout."},
+{l:"Use only black, white, and grey — no colour",t:"Colour distracts at this stage. If feedback focuses on colour, redirect it to structure."},
+{l:"Label every element: what it is and what it does",t:"A button labelled Button tells you nothing. Label it: Submit, goes to confirmation screen."},
+{l:"Verify wireframes match your user flow diagram",t:"Every screen in the flow needs a wireframe. Every wireframe needs to map to a flow step."},
+{l:"Develop one or two rough visual directions (colour, type) for comparison",t:"A mood board or two style tiles is enough. Do not jump to full high-fidelity yet."},
+{l:"Gather feedback and note what to change before going high-fidelity",t:"Prioritise structural issues. Do not tweak pixels at wireframe stage."}]},
+{id:"style",title:"Style Guide / Mini Design System",why:"The foundation that makes high-fidelity look intentional. Without it, screens drift apart.",tasks:[
+{l:"Choose a primary colour and one accent colour",t:"Use a contrast checker before committing. Accessibility first, aesthetics second."},
+{l:"Choose one typeface (two max) — define heading and body sizes",t:"Heading: 24-32px / 600 weight. Body: 14-16px / 400 weight. More choices = more inconsistency."},
+{l:"Define a spacing scale (4, 8, 16, 24, 32px)",t:"A base-8 scale makes alignment automatic. Never use arbitrary values like 13px or 27px."},
+{l:"Design a button — default, hover, and disabled states",t:"Disabled state is the most skipped. Include it — shows you have thought about real usage."},
+{l:"Design an input field — default, focus, and error states",t:"The error state is critical for accessibility. Red border alone is not enough — add an error message."},
+{l:"Document everything on a single Figma page labelled Style Guide",t:"Make it neat enough to screenshot for your case study. Messy style guides read as unfinished."}]},
+{id:"hifi",title:"High-Fidelity UI Screens",why:"Most students treat this as the entire project. It is step 12 of 17. The work before it is what makes it good.",tasks:[
+{l:"Apply the style guide to the wireframes — refine, do not redesign",t:"If the structure needs changing, fix the wireframe first, then apply the style guide."},
+{l:"Design the 5-8 key screens at full fidelity",t:"Every screen should feel like it came from the same product. Inconsistency is the most common beginner error."},
+{l:"Use real copy — no Lorem Ipsum",t:"Placeholder text hides content hierarchy problems. Real copy reveals them."},
+{l:"Include at least one empty state and one error state",t:"Empty states are what new users see first. Error states are what frustrated users see. Both matter."},
+{l:"Check colour contrast accessibility — WCAG AA minimum (4.5:1 ratio)",t:"Use Stark plugin or WebAIM Contrast Checker. Inaccessible contrast is an automatic deduction in reviews."},
+{l:"Review consistency: spacing, alignment, and type sizes across all screens",t:"Use Figma's Select all with same feature to find inconsistencies fast."}]},
+{id:"proto",title:"Prototype",why:"A PDF of screens is not a prototype. This makes the design testable and demonstrates interaction thinking.",tasks:[
+{l:"Link key screens to cover the primary user journey end-to-end",t:"A stranger should complete the main task without your explanation."},
+{l:"Annotate key interactions and transitions that matter for usability",t:"Add a sticky note: This transition signals progress, not a new page."},
+{l:"Check accessibility: contrast, focus states, and tap target sizes (min 44x44px)",t:"Focus states must be visible — colour change alone is not enough."},
+{l:"Add at least one interaction animation (transition or overlay)",t:"A simple smart-animate or slide transition elevates the feel significantly."},
+{l:"Walk through the full flow yourself — fix broken links before testing",t:"You will always find 2-3 broken links. Do this before participants see it."}]},
+{id:"testing",title:"Usability Test Report",why:"Evidence that the design was tested, not just designed. This is what separates a good case study from a great one.",tasks:[
+{l:"Write 3-5 scenario-based tasks for participants to complete",t:"'You need to add a medication reminder for your child.' Not: Find the reminder button."},
+{l:"Test with 3-5 people — classmates or anyone in the target group",t:"Give them the task, then be quiet. Your job is to observe, not to guide."},
+{l:"Capture issues with severity rating: critical, moderate, or minor",t:"Critical = blocks task. Moderate = causes confusion. Minor = slight friction."},
+{l:"Iterate the prototype to address top findings — document what changed and why",t:"Before/after screenshots of changed screens are compelling evidence in a case study."},
+{l:"Run a second round of testing if time allows — even one session validates fixes",t:"Optional but recommended. One extra session confirms whether the fix worked."}]},
+{id:"handoff",title:"Final Design & Developer Handoff",why:"Handoff is a real deliverable. It shows you understand how design becomes a product.",tasks:[
+{l:"Deliver high-fidelity screens with Figma Dev Mode or redlines enabled",t:"Developers can then inspect spacing, colours, and typography directly."},
+{l:"Provide an updated UI kit with all components used in the final design",t:"Any component that appears more than twice should be in the kit."},
+{l:"Annotate interactions and transitions for the development team",t:"Describe the animation: what triggers it, what moves, duration and easing."},
+{l:"Export all assets (icons, images) at correct resolutions",t:"Icons: SVG. Images: 2x PNG or WebP. Name files descriptively, not icon1.png."},
+{l:"Write a short design decisions document — what you chose and why",t:"3-5 key decisions, each with a we chose X over Y because Z structure."}]},
+{id:"docs",title:"Documentation & Artifact Archive",why:"Organised artifacts show professional practice and make writing the case study much faster.",tasks:[
+{l:"Archive artifacts in a logical folder structure",t:"Folders: /research, /ia, /wireframes, /iterations, /visual, /usability-testing, /final-design"},
+{l:"Write brief captions for each key image or video",t:"One sentence: what it shows and why it mattered. You will copy-paste these into the case study."},
+{l:"Create a one-page portfolio summary as a quick-scan version",t:"Cover: problem, your role, key process steps, and the outcome. Link to the full case study."}]},
+{id:"write",title:"Case Study Write-Up",why:"The story of the project. This is what a hiring manager or client actually reads.",tasks:[
+{l:"Write a one-paragraph project overview (problem, your role, outcome)",t:"This is the hook. Write it last, once you know the full story."},
+{l:"Structure it: Problem, Research, Define, Design, Test, Outcome",t:"Each section answers: what you did, what you found, what you decided."},
+{l:"Include 4-6 visuals: persona, journey map, wireframes, final UI, prototype",t:"Include a prototype video or GIF if possible. It is the most clicked element in a case study."},
+{l:"Document 2-3 key decisions and why you made them",t:"We tested two navigation patterns and chose tabs because users over 40 found hamburger non-obvious."},
+{l:"Write a what I would do differently reflection",t:"This shows maturity. It is not an admission of failure — it is evidence of critical thinking."},
+{l:"Use consistent layout and typography for readability throughout",t:"One font. Clear hierarchy. Do not make the reader work to follow the story."},
+{l:"Highlight impactful screens with callouts or annotations",t:"Annotated screens communicate design thinking far better than screens alone."},
+{l:"Include before/after comparisons to demonstrate improvement",t:"If you iterated based on usability testing, show the before and after side by side."}]},
+{id:"publish",title:"Review, Polish & Publish",why:"The last 5% determines whether the case study reads as professional or unfinished.",tasks:[
+{l:"Have a peer review for clarity, conciseness, and logical flow",t:"Ask them: Is there any section where you lost the thread? Note their exact answer."},
+{l:"Check accessibility basics — contrast and alt text for all images",t:"Re-run contrast checks. All images need alt text if publishing on a web platform."},
+{l:"Proofread for grammar, consistency, and missing context",t:"Read it aloud. You will catch awkward sentences your eyes skip over when reading silently."},
+{l:"Publish to your portfolio — Behance, personal site, or Notion",t:"A published case study is infinitely more valuable than a polished draft. Publish, then iterate."},
+{l:"Create a short social summary with a link to the full case study",t:"LinkedIn: 3 sentences + 1 key visual + link. Do not write an essay — make them click."},
+{l:"Note personal learnings and potential future work",t:"Add this to the end of the case study. It signals you are a reflective practitioner."}]}
+];
+
+var S={done:{},open:{},view:'qr'};
+var CHKSVG='<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3.2 6L8 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function total(){return D.reduce(function(s,d){return s+d.tasks.length},0)}
+function doneCount(){return Object.keys(S.done).filter(function(k){return S.done[k]}).length}
+function isD(id,i){return !!S.done[id+'-'+i]}
+function delDone(d){return d.tasks.every(function(_,i){return isD(d.id,i)})}
+function delC(d){return d.tasks.filter(function(_,i){return isD(d.id,i)}).length}
+function delP(d){return d.tasks.length?Math.round(delC(d)/d.tasks.length*100):0}
+
+function upProg(){
+  var t=total(),d=doneCount(),p=t?Math.round(d/t*100):0;
+  document.getElementById('spct').textContent=p+'%';
+  document.getElementById('sfill').style.width=p+'%';
+  document.getElementById('ssub').textContent=d+' of '+t+' tasks done';
+  var b=document.getElementById('dban');
+  if(d===t&&t>0)b.classList.add('show'); else b.classList.remove('show');
+}
+
+function rNav(){
+  var h='';
+  D.forEach(function(d,i){
+    var dn=delDone(d),act=S.open[d.id];
+    h+='<div class="nrow'+(dn?' dn':'')+(act?' act':'')+'" onclick="nc(\''+d.id+'\')">'
+      +'<div class="ndot"></div>'
+      +'<div class="nlbl">'+(i+1)+'. '+d.title+'</div>'
+      +'<div class="nct">'+delC(d)+'/'+d.tasks.length+'</div>'
+      +'</div>';
+  });
+  document.getElementById('snav').innerHTML=h;
+}
+
+function rDet(){
+  var h='';
+  D.forEach(function(d,di){
+    var c=delC(d),t=d.tasks.length,p=delP(d),adn=delDone(d),op=S.open[d.id];
+    h+='<div class="dc'+(op?' open':'')+(adn?' adn':'')+'" id="dc-'+d.id+'">'
+      +'<div class="dh" onclick="td(\''+d.id+'\')">'
+      +'<div class="dnum">'+(di+1)+'</div>'
+      +'<div class="dm"><div class="dt">'+d.title+'</div><div class="dw">'+d.why+'</div></div>'
+      +'<div class="dr"><div class="dbadge">'+c+'/'+t+'</div><div class="dchev">&#9654;</div></div>'
+      +'</div>'
+      +'<div class="dstrip"><div class="dsf" style="width:'+p+'%"></div></div>'
+      +'<div class="dbody">';
+    d.tasks.forEach(function(tk,ti){
+      var ck=isD(d.id,ti);
+      h+='<div class="tr'+(ck?' ck':'')+'" onclick="tt(\''+d.id+'\','+ti+')">'
+        +'<div class="tchk">'+CHKSVG+'</div>'
+        +'<div class="tc"><div class="tl">'+tk.l+'</div><div class="tip">'+tk.t+'</div></div>'
+        +'</div>';
+    });
+    h+='</div></div>';
+  });
+  document.getElementById('dc').innerHTML=h;
+}
+
+function rQuick(){
+  var h='';
+  D.forEach(function(d,i){
+    var dn=delDone(d);
+    h+='<div class="qcard'+(dn?' dn':'')+'" onclick="qt(\''+d.id+'\')">'
+      +'<div class="qchk">'+CHKSVG+'</div>'
+      +'<div class="qlbl">'+(i+1)+'. '+d.title+'</div>'
+      +'</div>';
+  });
+  document.getElementById('qgrid').innerHTML=h;
+}
+
+function td(id){S.open[id]=!S.open[id];rDet();rNav();}
+
+function tt(id,ti){
+  var k=id+'-'+ti;
+  S.done[k]=!S.done[k];
+  if(S.done[k]){
+    var d=D.find(function(x){return x.id===id});
+    if(d&&delDone(d)){
+      boom();
+      var ix=D.findIndex(function(x){return x.id===id});
+      if(ix+1<D.length)S.open[D[ix+1].id]=true;
+    }
+  }
+  rDet();rQuick();rNav();upProg();
+}
+
+function qt(id){
+  D.forEach(function(d){S.open[d.id]=false;});
+  S.open[id]=true;sv('det');rDet();rQuick();rNav();
+  setTimeout(function(){var e=document.getElementById('dc-'+id);if(e)e.scrollIntoView({behavior:'smooth',block:'start'})},50);
+}
+
+function nc(id){
+  if(S.open[id]&&S.view==='det'){S.open[id]=false;rDet();rNav();return;}
+  S.open[id]=true;sv('det');rDet();rNav();
+  setTimeout(function(){var e=document.getElementById('dc-'+id);if(e)e.scrollIntoView({behavior:'smooth',block:'start'})},50);
+}
+
+function sv(v){
+  S.view=v;
+  document.getElementById('dv').className='dv'+(v==='det'?' show':'');
+  document.getElementById('qv').className='qv'+(v==='qr'?' show':'');
+  document.getElementById('bdet').className='vbtn'+(v==='det'?' on':'');
+  document.getElementById('bqr').className='vbtn'+(v==='qr'?' on':'');
+}
+
+function boom(){
+  var w=document.getElementById('cf'),cols=['#C0471A','#2A7A4A','#1C1A17','#C4942A','#4A7FB5'];
+  w.innerHTML='';w.className='cf on';
+  for(var i=0;i<45;i++){
+    var p=document.createElement('div');
+    p.style.cssText='position:absolute;width:7px;height:7px;border-radius:'+(Math.random()>.5?'50%':'2px')+';'
+      +'left:'+Math.random()*100+'vw;background:'+cols[Math.floor(Math.random()*cols.length)]+';'
+      +'animation:fall '+(1.4+Math.random()*2)+'s '+Math.random()*.5+'s linear forwards;';
+    w.appendChild(p);
+  }
+  setTimeout(function(){w.className='cf';w.innerHTML=''},3500);
+}
+
+rDet();rQuick();rNav();upProg();sv('qr');
+</script>
+</body>
+</html>
